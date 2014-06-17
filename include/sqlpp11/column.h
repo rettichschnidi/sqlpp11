@@ -41,9 +41,12 @@
 
 namespace sqlpp
 {
-	template<typename Table, typename ColumnSpec>
-		struct column_t: public ColumnSpec::_value_type::template expression_operators<column_t<Table, ColumnSpec>>,
-		public ColumnSpec::_value_type::template column_operators<column_t<Table, ColumnSpec>>
+	struct column_base_t {};
+
+	template<typename Table, typename Column, typename ColumnSpec>
+		struct crtp_column_t: public ColumnSpec::_value_type::template expression_operators<Column>,
+		public ColumnSpec::_value_type::template column_operators<Column>,
+		public column_base_t
 	{ 
 		using _traits = make_traits<typename ColumnSpec::_value_type, tag::column, tag::expression, tag::named_expression>;
 		struct _recursive_traits
@@ -60,53 +63,62 @@ namespace sqlpp
 		using _name_t = typename _spec_t::_name_t;
 
 		template<typename T>
-			using _is_valid_operand = typename ColumnSpec::_value_type::template _is_valid_operand<T>;
+			using _is_valid_operand = typename _spec_t::_value_type::template _is_valid_operand<T>;
 
-		column_t() = default;
-		column_t(const column_t&) = default;
-		column_t(column_t&&) = default;
-		column_t& operator=(const column_t&) = default;
-		column_t& operator=(column_t&&) = default;
-		~column_t() = default;
+		template<typename AliasProvider>
+			using _table_alias = crtp_column_t<AliasProvider, Column, ColumnSpec>;
+
+		crtp_column_t() = default;
+		crtp_column_t(const crtp_column_t&) = default;
+		crtp_column_t(crtp_column_t&&) = default;
+		crtp_column_t& operator=(const crtp_column_t&) = default;
+		crtp_column_t& operator=(crtp_column_t&&) = default;
+		~crtp_column_t() = default;
 
 		static constexpr const char* _get_name()
 		{
 			return _name_t::_get_name();
 		}
 
+		Column& column() { return static_cast<Column&>(*this); }
+		const Column& column() const { return static_cast<const Column&>(*this); }
+
 		template<typename alias_provider>
-			expression_alias_t<column_t, alias_provider> as(const alias_provider&) const
+			expression_alias_t<Column, alias_provider> as(const alias_provider&) const
 			{
-				return { *this };
+				return { column() };
 			}
 
 		template<typename T>
-			auto operator =(T t) const -> assignment_t<column_t, wrap_operand_t<T>>
+			auto operator =(T t) const -> assignment_t<Column, wrap_operand_t<T>>
 			{
 				using rhs = wrap_operand_t<T>;
 				static_assert(_is_valid_operand<rhs>::value, "invalid rhs operand assignment operand");
 
-				return { *this, rhs{t} };
+				return { column(), rhs{t} };
 			}
 
 		auto operator =(sqlpp::null_t) const
-			->assignment_t<column_t, sqlpp::null_t>
+			->assignment_t<Column, sqlpp::null_t>
 			{
-				static_assert(can_be_null_t<column_t>::value, "column cannot be null");
-				return { *this, {} };
+				static_assert(can_be_null_t<crtp_column_t>::value, "column cannot be null");
+				return { column(), {} };
 			}
 
 		auto operator =(sqlpp::default_value_t) const
-			->assignment_t<column_t, sqlpp::default_value_t>
+			->assignment_t<Column, sqlpp::default_value_t>
 			{
-				return { *this, {} };
+				return { column(), {} };
 			}
 	};
 
-	template<typename Context, typename... Args>
-		struct serializer_t<Context, column_t<Args...>>
+	template<typename Table, typename ColumnSpec>
+		struct column_t: public crtp_column_t<Table, column_t<Table, ColumnSpec>, ColumnSpec> {};
+
+	template<typename Context, typename X>
+		struct serializer_t<Context, X, typename std::enable_if<std::is_base_of<column_base_t, X>::value, void>::type>
 		{
-			using T = column_t<Args...>;
+			using T = X;
 
 			static Context& _(const T& t, Context& context)
 			{

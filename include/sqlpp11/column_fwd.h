@@ -30,6 +30,9 @@
 
 namespace sqlpp
 {
+	template<typename Table, typename Column, typename ColumnSpec>
+		class crtp_column_t;
+
 	template<typename Table, typename ColumnSpec>
 		class column_t;
 }

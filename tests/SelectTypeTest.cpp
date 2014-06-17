@@ -49,6 +49,9 @@ int main()
 	test::TabFoo f; 
 	test::TabBar t;
 
+	static_assert(std::is_same<decltype(t.alpha), test::TabBar_::Alpha>::value, "type requirement");
+
+
 	// Test a table
 	{
 		using T = decltype(t);
@@ -292,6 +295,7 @@ int main()
 		auto a = select(m).from(t).as(alias::b).a;
 		// FIXME: Do we really need that test? multi_column is a no_value static_assert(not sqlpp::is_expression_t<decltype(a)>::value, "a multi_column is not a value");
 	}
+
 	// Test that result sets with identical name/value combinations have identical types
 	{
 		auto a = select(t.alpha);
@@ -356,6 +360,11 @@ int main()
 	static_assert(sqlpp::is_named_expression_t<decltype(t.alpha.as(alias::a))>::value, "an alias of alpha should be a named expression");
 	static_assert(sqlpp::is_alias_t<decltype(t.alpha.as(alias::a))>::value, "an alias of alpha should be an alias");
 
+	/*
+	auto g = (t.gamma == true);
+	using G = decltype(g);
+	G::kaesekuchen;
+	*/
 	auto z = select(t.alpha).from(t) == 7;
 	auto l = t.as(alias::left);
 	auto r = select(t.gamma.as(alias::a)).from(t).where(t.gamma == true).as(alias::right);
@@ -376,16 +385,24 @@ int main()
 	static_assert(std::is_same<SCL_T, SF_T>::value, "should be the same");
 	*/
 	static_assert(sqlpp::is_boolean_t<decltype(select(r.a).from(r))>::value, "select(bool) has to be a bool");
-	auto s1 = sqlpp::select().flags(sqlpp::distinct, sqlpp::straight_join).columns(l.alpha, l.beta, select(r.a).from(r))
+  sqlpp::required_tables_of<decltype(select(r.a).from(r))>::kaesekuchen;
+	auto s1 = sqlpp::select()
+		.flags(sqlpp::distinct, sqlpp::straight_join)
+		.columns(l.alpha, l.beta, select(r.a).from(r))
 		.from(r,t,l)
 		.where(t.beta == "hello world" and select(t.gamma).from(t))// .as(alias::right))
-		.group_by(l.gamma, r.a)
-		.having(r.a != true)
+		//.group_by(l.gamma, r.a)
+		//.having(r.a != true)
 		.order_by(l.beta.asc())
-		.limit(17)
-		.offset(3)
-		.as(alias::a)
+		//.limit(17)
+		//.offset(3)
+		//.as(alias::a)
 		;
+  sqlpp::provided_tables_of<decltype(r)>::wurstbrot;
+  sqlpp::required_tables_of<decltype(r.a)>::wurstbrot;
+  sqlpp::required_tables_of<decltype(s1)>::kaesekuchen;
+#if 0
+#endif
 
 	return 0;
 }

@@ -49,13 +49,14 @@ namespace sqlpp
 
 	template<
 		typename Select,
-						 typename... NamedExpr
-							 >
-							 struct select_pseudo_table_t: public sqlpp::table_t<select_pseudo_table_t<
-																						 Select,
-																						 NamedExpr...>, select_column_spec_t<NamedExpr>...>
+		typename... NamedExpr
+		>
+		struct select_pseudo_table_t: public sqlpp::table_t<
+																	select_pseudo_table_t<Select, NamedExpr...>, 
+																	column_t<select_pseudo_table_t<Select, NamedExpr...>, select_column_spec_t<NamedExpr>>...
+																								 >
 	{
-		using _traits = make_traits<no_value_t, tag::table, tag::pseudo_table>;
+		using _traits = make_traits<no_value_t, tag::pseudo_table>;
 		using _recursive_traits = make_recursive_traits<>;
 
 		select_pseudo_table_t(Select select):

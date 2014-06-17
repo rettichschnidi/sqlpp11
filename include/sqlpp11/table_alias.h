@@ -35,8 +35,8 @@
 
 namespace sqlpp
 {
-	template<typename AliasProvider, typename Table, typename... ColumnSpec>
-		struct table_alias_t: public ColumnSpec::_name_t::template _member_t<column_t<AliasProvider, ColumnSpec>>...
+	template<typename AliasProvider, typename Table, typename... Column>
+		struct table_alias_t: public Column::_name_t::template _member_t<Column::template _table_alias<AliasProvider>>...
 	{
 		//FIXME: Need to add join functionality
 		using _traits = make_traits<value_type_of<Table>, tag::table, tag::alias, tag::named_expression_if<is_expression_t<Table>>>;
@@ -52,7 +52,7 @@ namespace sqlpp
 		static_assert(required_tables_of<Table>::size::value == 0, "table aliases must not depend on external tables");
 
 		using _name_t = typename AliasProvider::_name_t;
-		using _column_tuple_t = std::tuple<column_t<Table, ColumnSpec>...>;
+		using _column_tuple_t = std::tuple<Column...>;
 
 		table_alias_t(Table table):
 			_table(table)
@@ -61,10 +61,10 @@ namespace sqlpp
 		Table _table;
 	};
 
-	template<typename Context, typename AliasProvider, typename Table, typename... ColumnSpec>
-		struct serializer_t<Context, table_alias_t<AliasProvider, Table, ColumnSpec...>>
+	template<typename Context, typename AliasProvider, typename Table, typename... Column>
+		struct serializer_t<Context, table_alias_t<AliasProvider, Table, Column...>>
 		{
-			using T = table_alias_t<AliasProvider, Table, ColumnSpec...>;
+			using T = table_alias_t<AliasProvider, Table, Column...>;
 
 			static Context& _(const T& t, Context& context)
 			{

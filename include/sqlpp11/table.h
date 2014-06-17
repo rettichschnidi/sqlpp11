@@ -39,8 +39,8 @@ namespace sqlpp
 {
 	struct table_base_t {};
 
-	template<typename Table, typename... ColumnSpec>
-		struct table_t: public table_base_t, public ColumnSpec::_name_t::template _member_t<column_t<Table, ColumnSpec>>...
+	template<typename Table, typename... Column>
+		struct table_t: public table_base_t, public Column::_name_t::template _member_t<Column>...
 	{
 		using _traits = make_traits<no_value_t, tag::table>;
 
@@ -52,11 +52,11 @@ namespace sqlpp
 			using _extra_tables = detail::type_set<>;
 		};
 
-		static_assert(sizeof...(ColumnSpec), "at least one column required per table");
-		using _required_insert_columns = typename detail::make_type_set_if<require_insert_t, column_t<Table, ColumnSpec>...>::type;
-		using _column_tuple_t = std::tuple<column_t<Table, ColumnSpec>...>;
+		static_assert(sizeof...(Column), "at least one column required per table");
+		using _required_insert_columns = typename detail::make_type_set_if<require_insert_t, Column...>::type;
+		using _column_tuple_t = std::tuple<Column...>;
 		template<typename AliasProvider>
-			using _alias_t = table_alias_t<AliasProvider, Table, ColumnSpec...>;
+			using _alias_t = table_alias_t<AliasProvider, Table, Column...>;
 
 
 		template<typename T>
