@@ -254,7 +254,7 @@ namespace sqlpp
 					template<typename AliasProvider>
 						struct _deferred_table_t
 						{
-							using table = select_pseudo_table_t<_statement_t, Columns...>;
+							using table = select_pseudo_table_t<_statement_t, AliasProvider, Columns...>;
 							using alias = typename table::template _alias_t<AliasProvider>;
 						};
 

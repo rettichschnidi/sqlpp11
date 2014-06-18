@@ -66,7 +66,7 @@ namespace sqlpp
 			using _is_valid_operand = typename _spec_t::_value_type::template _is_valid_operand<T>;
 
 		template<typename AliasProvider>
-			using _table_alias = crtp_column_t<AliasProvider, Column, ColumnSpec>;
+			using _column_of_table_alias = crtp_column_t<AliasProvider, Column, ColumnSpec>;
 
 		crtp_column_t() = default;
 		crtp_column_t(const crtp_column_t&) = default;

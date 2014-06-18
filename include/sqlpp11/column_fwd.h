@@ -35,6 +35,17 @@ namespace sqlpp
 
 	template<typename Table, typename ColumnSpec>
 		class column_t;
+
+	template<typename Column, typename AliasProvider>
+		struct column_of_table_alias
+		{
+			using type = typename Column::template _column_of_table_alias<AliasProvider>;
+		};
+
+	template<typename Column, typename AliasProvider>
+		using column_of_table_alias_t = typename column_of_table_alias<Column, AliasProvider>::type;
+
+
 }
 
 #endif

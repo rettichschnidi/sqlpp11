@@ -36,7 +36,7 @@
 namespace sqlpp
 {
 	template<typename AliasProvider, typename Table, typename... Column>
-		struct table_alias_t: public Column::_name_t::template _member_t<Column::template _table_alias<AliasProvider>>...
+		struct table_alias_t: public Column::_name_t::template _member_t<column_of_table_alias_t<Column, AliasProvider>>...
 	{
 		//FIXME: Need to add join functionality
 		using _traits = make_traits<value_type_of<Table>, tag::table, tag::alias, tag::named_expression_if<is_expression_t<Table>>>;

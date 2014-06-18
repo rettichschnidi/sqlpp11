@@ -49,11 +49,12 @@ namespace sqlpp
 
 	template<
 		typename Select,
+		typename AliasProvider,
 		typename... NamedExpr
 		>
 		struct select_pseudo_table_t: public sqlpp::table_t<
-																	select_pseudo_table_t<Select, NamedExpr...>, 
-																	column_t<select_pseudo_table_t<Select, NamedExpr...>, select_column_spec_t<NamedExpr>>...
+																	select_pseudo_table_t<Select, AliasProvider, NamedExpr...>, 
+																	column_t<AliasProvider, select_column_spec_t<NamedExpr>>...
 																								 >
 	{
 		using _traits = make_traits<no_value_t, tag::pseudo_table>;
@@ -73,10 +74,10 @@ namespace sqlpp
 		Select _select;
 	};
 
-	template<typename Context, typename Select, typename... NamedExpr>
-		struct serializer_t<Context, select_pseudo_table_t<Select, NamedExpr...>>
+	template<typename Context, typename Select, typename AliasProvider, typename... NamedExpr>
+		struct serializer_t<Context, select_pseudo_table_t<Select, AliasProvider, NamedExpr...>>
 		{
-			using T = select_pseudo_table_t<Select, NamedExpr...>;
+			using T = select_pseudo_table_t<Select, AliasProvider, NamedExpr...>;
 
 			static Context& _(const T& t, Context& context)
 			{

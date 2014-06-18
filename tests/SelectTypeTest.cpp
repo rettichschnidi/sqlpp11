@@ -391,16 +391,19 @@ int main()
 		.columns(l.alpha, l.beta, select(r.a).from(r))
 		.from(r,t,l)
 		.where(t.beta == "hello world" and select(t.gamma).from(t))// .as(alias::right))
-		//.group_by(l.gamma, r.a)
-		//.having(r.a != true)
+		.group_by(l.gamma, r.a)
+		.having(r.a != true)
 		.order_by(l.beta.asc())
 		//.limit(17)
 		//.offset(3)
-		//.as(alias::a)
+		.as(alias::a)
 		;
   sqlpp::provided_tables_of<decltype(r)>::wurstbrot;
-  sqlpp::required_tables_of<decltype(r.a)>::wurstbrot;
-  sqlpp::required_tables_of<decltype(s1)>::kaesekuchen;
+  decltype(r.a)::wurstbrot;
+	decltype((r.a != true)._lhs)::kaesekuchen;
+  sqlpp::required_tables_of<decltype(r.a != true)>::wurstbrot;
+  sqlpp::required_tables_of<decltype(t.alpha != 1)>::wurstbrot;
+  //sqlpp::required_tables_of<decltype(s1)>::kaesekuchen;
 #if 0
 #endif
 
