@@ -37,6 +37,12 @@
 
 namespace sqlpp
 {
+	template<typename T>
+		concept bool Table()
+		{
+			return is_table_t<T>::value;
+		}
+
 	// FROM DATA
 	template<typename Database, typename... Tables>
 		struct from_data_t
@@ -59,6 +65,7 @@ namespace sqlpp
 	template<typename Database, typename... Tables>
 		struct from_t
 		{
+			static_assert(detail::all_t<is_table_t<Tables>::value...>::value, "");
 			using _traits = make_traits<no_value_t, tag::is_from>;
 			using _recursive_traits = make_recursive_traits<Tables...>;
 			using _is_dynamic = is_database<Database>;
@@ -165,7 +172,14 @@ namespace sqlpp
 
 				using _consistency_check = consistent_t;
 
+				/*
 				template<typename... Tables>
+					auto from(Tables... tables) const
+					-> typename std::enable_if<
+					detail::all_t<is_table_t<Tables>::value...>::value,
+				 	_new_statement_t<from_t<void, Tables...>>>::type
+					*/
+				template<Table... Tables>
 					auto from(Tables... tables) const
 					-> _new_statement_t<from_t<void, Tables...>>
 					{

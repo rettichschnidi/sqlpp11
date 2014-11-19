@@ -42,6 +42,7 @@ int main()
 	test::TabBar t;
 
 	select(t.alpha).flags(sqlpp::all).from(t);
+	/*
 	for (const auto& row : db(select(all_of(t)).from(t).where(true)))
 	{
 		int64_t a = row.alpha;
@@ -98,6 +99,7 @@ int main()
 	std::cerr << serialize(stat, printer).str() << std::endl;
 
 	select(sqlpp::value(7).as(t.alpha));
+	*/
 
 	return 0;
 }
