@@ -130,6 +130,7 @@ for tableCreation in tableCreations:
     tableMember = toMemberName(sqlTableName)
     tableNamespace = tableClass + '_'
     tableTemplateParameters = tableClass
+    print('  struct ' + tableClass + ';', file=header)
     print('  namespace ' + tableNamespace, file=header)
     print('  {', file=header)
     for column in tableCreation.create.columns:
@@ -137,11 +138,12 @@ for tableCreation in tableCreations:
             continue
         sqlColumnName = column[0]
         columnClass = toClassName(sqlColumnName)
+        columnSpec = toClassName(sqlColumnName) + '_'
         tableTemplateParameters += ',\n               ' + tableNamespace + '::' + columnClass
         columnMember = toMemberName(sqlColumnName)
         sqlColumnType = column[1].lower()
         columnCanBeNull = not column.notNull
-        print('    struct ' + columnClass, file=header)
+        print('    struct ' + columnSpec, file=header)
         print('    {', file=header)
         print('      struct _name_t', file=header)
         print('      {', file=header)
@@ -154,7 +156,6 @@ for tableCreation in tableCreations:
         print('            const T& operator()() const { return ' + columnMember + '; }', file=header)
         print('          };', file=header)
         print('      };', file=header)
-        #print(sqlColumnType)
         traitslist = [NAMESPACE + '::' + types[sqlColumnType]];
         requireInsert = True
         if column.hasAutoValue:
@@ -170,6 +171,7 @@ for tableCreation in tableCreations:
             traitslist.append(NAMESPACE + '::tag::require_insert');
         print('      using _traits = ' + NAMESPACE + '::make_traits<' + ', '.join(traitslist) + '>;', file=header)
         print('    };', file=header)
+        print('    struct ' + columnClass + ': public sqlpp::column_t<' + tableClass + ', ' + columnSpec + '>{};', file=header)
     print('  }', file=header)
     print('', file=header)
 

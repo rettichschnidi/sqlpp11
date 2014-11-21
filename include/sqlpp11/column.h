@@ -41,8 +41,11 @@
 
 namespace sqlpp
 {
+	struct column_base_t {};
+
 	template<typename Table, typename ColumnSpec>
 		struct column_t: 
+			public column_base_t,
 			public expression_operators<column_t<Table, ColumnSpec>, value_type_of<ColumnSpec>>,
 			public column_operators<column_t<Table, ColumnSpec>, value_type_of<ColumnSpec>>
 	{ 
@@ -112,10 +115,10 @@ namespace sqlpp
 			}
 	};
 
-	template<typename Context, typename... Args>
-		struct serializer_t<Context, column_t<Args...>>
+	template<typename Context, typename X>
+		struct serializer_t<Context, X, typename std::enable_if<std::is_base_of<column_base_t, X>::value>::type>
 		{
-			using T = column_t<Args...>;
+			using T = X;
 
 			static Context& _(const T& t, Context& context)
 			{

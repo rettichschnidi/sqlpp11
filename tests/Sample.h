@@ -6,9 +6,10 @@
 
 namespace test
 {
+  struct TabFoo;
   namespace TabFoo_
   {
-    struct Delta
+    struct Delta_
     {
       struct _name_t
       {
@@ -23,7 +24,8 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
-    struct Epsilon
+    struct Delta: public sqlpp::column_t<TabFoo, Delta_>{};
+    struct Epsilon_
     {
       struct _name_t
       {
@@ -38,7 +40,8 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::bigint, sqlpp::tag::can_be_null>;
     };
-    struct Omega
+    struct Epsilon: public sqlpp::column_t<TabFoo, Epsilon_>{};
+    struct Omega_
     {
       struct _name_t
       {
@@ -53,6 +56,7 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::floating_point, sqlpp::tag::can_be_null>;
     };
+    struct Omega: public sqlpp::column_t<TabFoo, Omega_>{};
   }
 
   struct TabFoo: sqlpp::table_t<TabFoo,
@@ -72,9 +76,10 @@ namespace test
       };
     };
   };
+  struct TabBar;
   namespace TabBar_
   {
-    struct Alpha
+    struct Alpha_
     {
       struct _name_t
       {
@@ -89,7 +94,8 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::bigint, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update, sqlpp::tag::can_be_null>;
     };
-    struct Beta
+    struct Alpha: public sqlpp::column_t<TabBar, Alpha_>{};
+    struct Beta_
     {
       struct _name_t
       {
@@ -104,7 +110,8 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
-    struct Gamma
+    struct Beta: public sqlpp::column_t<TabBar, Beta_>{};
+    struct Gamma_
     {
       struct _name_t
       {
@@ -119,7 +126,8 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::boolean, sqlpp::tag::require_insert>;
     };
-    struct Delta
+    struct Gamma: public sqlpp::column_t<TabBar, Gamma_>{};
+    struct Delta_
     {
       struct _name_t
       {
@@ -134,6 +142,7 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::can_be_null>;
     };
+    struct Delta: public sqlpp::column_t<TabBar, Delta_>{};
   }
 
   struct TabBar: sqlpp::table_t<TabBar,

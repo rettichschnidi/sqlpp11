@@ -39,10 +39,25 @@ namespace sqlpp
 {
 	struct table_base_t {};
 
+	template<typename Table, typename ColumnSpec, typename Enable = void>
+		struct make_column
+		{
+			using type = column_t<Table, ColumnSpec>;
+		};
+
+	template<typename Table, typename Column>
+		struct make_column<Table, Column, typename std::enable_if<is_column_t<Column>::value>::type>
+		{
+			using type = Column;
+		};
+
+	template<typename Table, typename ColumnSpec>
+		using make_column_t = typename make_column<Table, ColumnSpec>::type;
+
 	template<typename Table, typename... ColumnSpec>
 		struct table_t: 
 			public table_base_t, 
-			public member_t<ColumnSpec, column_t<Table, ColumnSpec>>...
+			public member_t<ColumnSpec, make_column_t<Table, ColumnSpec>>...
 	{
 		using _traits = make_traits<no_value_t, tag::is_table>;
 
@@ -57,8 +72,8 @@ namespace sqlpp
 		};
 
 		static_assert(sizeof...(ColumnSpec), "at least one column required per table");
-		using _required_insert_columns = typename detail::make_type_set_if<require_insert_t, column_t<Table, ColumnSpec>...>::type;
-		using _column_tuple_t = std::tuple<column_t<Table, ColumnSpec>...>;
+		using _required_insert_columns = typename detail::make_type_set_if<require_insert_t, make_column_t<Table, ColumnSpec>...>::type;
+		using _column_tuple_t = std::tuple<make_column_t<Table, ColumnSpec>...>;
 		template<typename AliasProvider>
 			using _alias_t = table_alias_t<AliasProvider, Table, ColumnSpec...>;
 
