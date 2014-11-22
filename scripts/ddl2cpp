@@ -171,7 +171,11 @@ for tableCreation in tableCreations:
             traitslist.append(NAMESPACE + '::tag::require_insert');
         print('      using _traits = ' + NAMESPACE + '::make_traits<' + ', '.join(traitslist) + '>;', file=header)
         print('    };', file=header)
-        print('    struct ' + columnClass + ': public sqlpp::column_t<' + tableClass + ', ' + columnSpec + '>{};', file=header)
+        print('    struct ' + columnClass + ': public sqlpp::column_t<' + tableClass + ', ' + columnClass + ', ' + columnSpec + '>', file=header)
+        print('    {', file=header)
+        print('        using _base = sqlpp::column_t<' + tableClass + ', ' + columnClass + ', ' + columnSpec + '>;', file=header)
+        print('        using _base::operator=;', file=header)
+        print('    };', file=header)
     print('  }', file=header)
     print('', file=header)
 

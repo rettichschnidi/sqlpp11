@@ -43,16 +43,16 @@ namespace sqlpp
 {
 	struct column_base_t {};
 
-	template<typename Table, typename ColumnSpec>
+	template<typename Table, typename Column, typename Spec>
 		struct column_t: 
 			public column_base_t,
-			public expression_operators<column_t<Table, ColumnSpec>, value_type_of<ColumnSpec>>,
-			public column_operators<column_t<Table, ColumnSpec>, value_type_of<ColumnSpec>>
+			public expression_operators<Column, value_type_of<Spec>>,
+			public column_operators<Column, value_type_of<Spec>>
 	{ 
 		struct _traits
 		{
-			using _value_type = value_type_of<ColumnSpec>;
-			using _tags = detail::make_joined_set_t<detail::type_set<tag::is_column, tag::is_expression, tag::is_selectable>, typename ColumnSpec::_traits::_tags>;
+			using _value_type = value_type_of<Spec>;
+			using _tags = detail::make_joined_set_t<detail::type_set<tag::is_column, tag::is_expression, tag::is_selectable>, typename Spec::_traits::_tags>;
 		};
 
 		struct _recursive_traits
@@ -62,17 +62,17 @@ namespace sqlpp
 			using _provided_outer_tables = detail::type_set<>;
 			using _required_tables = detail::type_set<Table>;
 			using _extra_tables = detail::type_set<>;
-			using _tags = typename std::conditional<column_spec_can_be_null_t<ColumnSpec>::value,
+			using _tags = typename std::conditional<column_spec_can_be_null_t<Spec>::value,
 									detail::type_set<tag::can_be_null>,
 									detail::type_set<>>::type;
 		};
 
-		using _spec_t = ColumnSpec;
+		using _spec_t = Spec;
 		using _table = Table;
 		using _name_t = typename _spec_t::_name_t;
 
 		template<typename T>
-			using _is_valid_operand = is_valid_operand<value_type_of<ColumnSpec>, T>;
+			using _is_valid_operand = is_valid_operand<value_type_of<_spec_t>, T>;
 
 		column_t() = default;
 		column_t(const column_t&) = default;
@@ -87,31 +87,31 @@ namespace sqlpp
 		}
 
 		template<typename alias_provider>
-			expression_alias_t<column_t, alias_provider> as(const alias_provider&) const
+			expression_alias_t<Column, alias_provider> as(const alias_provider&) const
 			{
 				return { *this };
 			}
 
 		template<typename T>
-			auto operator =(T t) const -> assignment_t<column_t, wrap_operand_t<T>>
+			auto operator =(T t) const -> assignment_t<Column, wrap_operand_t<T>>
 			{
 				using rhs = wrap_operand_t<T>;
 				static_assert(_is_valid_operand<rhs>::value, "invalid rhs assignment operand");
 
-				return { *this, {rhs{t}} };
+				return { *static_cast<const Column*>(this), {rhs{t}} };
 			}
 
 		auto operator =(null_t) const
-			->assignment_t<column_t, null_t>
+			->assignment_t<Column, null_t>
 			{
 				static_assert(can_be_null_t<column_t>::value, "column cannot be null");
-				return { *this, null_t{} };
+				return { *static_cast<const Column*>(this), null_t{} };
 			}
 
 		auto operator =(default_value_t) const
-			->assignment_t<column_t, default_value_t>
+			->assignment_t<Column, default_value_t>
 			{
-				return { *this, default_value_t{} };
+				return { *static_cast<const Column*>(this), default_value_t{} };
 			}
 	};
 

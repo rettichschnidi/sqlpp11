@@ -24,7 +24,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
-    struct Delta: public sqlpp::column_t<TabFoo, Delta_>{};
+    struct Delta: public sqlpp::column_t<TabFoo, Delta, Delta_>
+    {
+        using _base = sqlpp::column_t<TabFoo, Delta, Delta_>;
+        using _base::operator=;
+    };
     struct Epsilon_
     {
       struct _name_t
@@ -40,7 +44,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::bigint, sqlpp::tag::can_be_null>;
     };
-    struct Epsilon: public sqlpp::column_t<TabFoo, Epsilon_>{};
+    struct Epsilon: public sqlpp::column_t<TabFoo, Epsilon, Epsilon_>
+    {
+        using _base = sqlpp::column_t<TabFoo, Epsilon, Epsilon_>;
+        using _base::operator=;
+    };
     struct Omega_
     {
       struct _name_t
@@ -56,7 +64,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::floating_point, sqlpp::tag::can_be_null>;
     };
-    struct Omega: public sqlpp::column_t<TabFoo, Omega_>{};
+    struct Omega: public sqlpp::column_t<TabFoo, Omega, Omega_>
+    {
+        using _base = sqlpp::column_t<TabFoo, Omega, Omega_>;
+        using _base::operator=;
+    };
   }
 
   struct TabFoo: sqlpp::table_t<TabFoo,
@@ -94,7 +106,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::bigint, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update, sqlpp::tag::can_be_null>;
     };
-    struct Alpha: public sqlpp::column_t<TabBar, Alpha_>{};
+    struct Alpha: public sqlpp::column_t<TabBar, Alpha, Alpha_>
+    {
+        using _base = sqlpp::column_t<TabBar, Alpha, Alpha_>;
+        using _base::operator=;
+    };
     struct Beta_
     {
       struct _name_t
@@ -110,7 +126,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
-    struct Beta: public sqlpp::column_t<TabBar, Beta_>{};
+    struct Beta: public sqlpp::column_t<TabBar, Beta, Beta_>
+    {
+        using _base = sqlpp::column_t<TabBar, Beta, Beta_>;
+        using _base::operator=;
+    };
     struct Gamma_
     {
       struct _name_t
@@ -126,7 +146,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::boolean, sqlpp::tag::require_insert>;
     };
-    struct Gamma: public sqlpp::column_t<TabBar, Gamma_>{};
+    struct Gamma: public sqlpp::column_t<TabBar, Gamma, Gamma_>
+    {
+        using _base = sqlpp::column_t<TabBar, Gamma, Gamma_>;
+        using _base::operator=;
+    };
     struct Delta_
     {
       struct _name_t
@@ -142,7 +166,11 @@ namespace test
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::can_be_null>;
     };
-    struct Delta: public sqlpp::column_t<TabBar, Delta_>{};
+    struct Delta: public sqlpp::column_t<TabBar, Delta, Delta_>
+    {
+        using _base = sqlpp::column_t<TabBar, Delta, Delta_>;
+        using _base::operator=;
+    };
   }
 
   struct TabBar: sqlpp::table_t<TabBar,
