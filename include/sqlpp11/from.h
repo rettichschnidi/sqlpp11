@@ -173,6 +173,13 @@ namespace sqlpp
 				using _consistency_check = consistent_t;
 
 				/*
+					 // this (incorrect) enable_if crashes clang
+				template<typename... Tables>
+					auto from(Tables... tables) const
+					-> typename std::enable_if<
+					detail::all_t<Tables::value...,
+				 	int>::type;
+
 				template<typename... Tables>
 					auto from(Tables... tables) const
 					-> typename std::enable_if<
