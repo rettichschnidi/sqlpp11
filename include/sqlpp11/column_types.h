@@ -31,5 +31,6 @@
 #include <sqlpp11/integral.h>
 #include <sqlpp11/floating_point.h>
 #include <sqlpp11/text.h>
+#include <sqlpp11/date.h>
 
 #endif

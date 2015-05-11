@@ -58,6 +58,15 @@ namespace sqlpp
 				and ValueType::template _is_valid_operand<T>::value // the correct value type is required, of course
 				;
 		};
+
+	template<template <typename> class IsValidType, typename T>
+		struct is_valid_operand_template
+		{
+			static constexpr bool value = 
+				is_expression_t<T>::value // expressions are OK
+				and IsValidType<T>::value // the correct value type is required, of course
+				;
+		};
 }
 
 #endif
