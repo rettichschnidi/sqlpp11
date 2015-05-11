@@ -32,5 +32,7 @@
 #include <sqlpp11/floating_point.h>
 #include <sqlpp11/text.h>
 #include <sqlpp11/date.h>
+#include <sqlpp11/timestamp.h>
+#include <sqlpp11/interval.h>
 
 #endif
