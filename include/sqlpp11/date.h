@@ -36,6 +36,9 @@
 
 namespace sqlpp
 {
+	struct interval;
+	struct timestamp;
+
 	// date value type
 	struct date
 	{
@@ -44,8 +47,32 @@ namespace sqlpp
 		//using _cpp_value_type = chrono::time_point;
 
 		template<typename T>
-			using _is_valid_operand = is_date_t<T>;
+			using _is_valid_operand = is_date_or_timestamp_t<T>;
 	};
+
+	template<typename T>
+		struct date_plus_minus_value_type
+		{
+			using type = integral;
+		};
+
+	template<>
+		struct date_plus_minus_value_type<timestamp>
+		{
+			using type = interval;
+		};
+
+	template<>
+		struct date_plus_minus_value_type<integral>
+		{
+			using type = date;
+		};
+
+	template<>
+		struct date_plus_minus_value_type<interval>
+		{
+			using type = timestamp;
+		};
 
 	// date expression operators
 	template<typename Base>
@@ -53,6 +80,9 @@ namespace sqlpp
 	{
 		template<typename T>
 			using _is_date_operand = is_valid_operand<date, T>;
+
+		template<typename T>
+			using _is_integral_operand = is_valid_operand_template<is_integral_t, T>;
 
 		template<typename T>
 			using _is_integral_operand = is_valid_operand_template<is_integral_t, T>;
