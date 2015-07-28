@@ -37,7 +37,5 @@ install:
 
 script:
   - "cd $TRAVIS_BUILD_DIR/build/scripts"
-  - "make -j3"
-  # test compile-time constraints
-  - "make test_sqlpp_constraints"
+  - "make -j$(nproc) all test test_sqlpp_constraints"
 
