@@ -1,4 +1,3 @@
-
 macro (build_and_run arg)
 	# Add headers to sources to enable file browsing in IDEs
 	include_directories("${CMAKE_BINARY_DIR}/tests")
