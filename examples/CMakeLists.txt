@@ -13,9 +13,9 @@ build(remove)
 build(select)
 find_package(Boost 1.50)
 if(Boost_FOUND)
-  MESSAGE(${Boost_INCLUDE_DIRS})
-  include_directories(${Boost_INCLUDE_DIRS})
-  build(ppgen)
+	MESSAGE(${Boost_INCLUDE_DIRS})
+	include_directories(${Boost_INCLUDE_DIRS})
+	build(ppgen)
 endif()
 
 
