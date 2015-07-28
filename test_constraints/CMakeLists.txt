@@ -1,5 +1,3 @@
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../tests")
-
 add_custom_target(test_sqlpp_constraints COMMAND true)
 
 function(test_constraint name pattern)
@@ -9,6 +7,8 @@ function(test_constraint name pattern)
 		EXCLUDE_FROM_ALL
 		"${name}.cpp"
 		)
+
+	target_include_directories("${name}" PRIVATE ../tests)
 
 	add_custom_command(OUTPUT "${name}.out"
 				COMMAND "${CMAKE_MAKE_PROGRAM}" "${name}" > "${CMAKE_CURRENT_BINARY_DIR}/${name}.out" 2>&1  || true

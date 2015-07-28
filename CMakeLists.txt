@@ -22,10 +22,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 2.6)
-
-# Cygwin does not define WIN32 and warn if not use with this flag
-set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
+cmake_minimum_required(VERSION 2.8.11)
 
 project (sqlpp11)
 enable_testing()
@@ -38,9 +35,14 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif ()
 set(CMAKE_CXX_FLAGS "-Wconversion -Wpedantic -Wshadow ${CMAKE_CXX_FLAGS}")
 
-set(include_dir "${PROJECT_SOURCE_DIR}/include")
-file(GLOB_RECURSE sqlpp_headers "${include_dir}/*.h")
-include_directories("${include_dir}")
+#Add headers to IDE projects
+file(GLOB_RECURSE HEADER_LIST include/*.h)
+add_library(sqlpp11 STATIC ${HEADER_LIST})
+set_target_properties(sqlpp11 PROPERTIES LINKER_LANGUAGE CXX)
+
+#Inherit sqlpp11's include directory to all its consumer
+target_include_directories(sqlpp11 PUBLIC include)
+
 add_subdirectory(tests)
 add_subdirectory(test_constraints)
 add_subdirectory(examples)
