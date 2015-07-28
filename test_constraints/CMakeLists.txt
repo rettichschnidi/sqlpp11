@@ -9,6 +9,7 @@ function(test_constraint name pattern)
 		)
 
 	target_include_directories("${name}" PRIVATE ../tests)
+	target_include_directories("${name}" PRIVATE ../include)
 
 	add_custom_command(OUTPUT "${name}.out"
 				COMMAND "${CMAKE_MAKE_PROGRAM}" "${name}" > "${CMAKE_CURRENT_BINARY_DIR}/${name}.out" 2>&1  || true
