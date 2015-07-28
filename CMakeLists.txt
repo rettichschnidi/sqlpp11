@@ -24,15 +24,15 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
-project (sqlpp11)
+project(sqlpp11)
 enable_testing()
 
 message(STATUS "Using ${CMAKE_CXX_COMPILER} (compiler id: ${CMAKE_CXX_COMPILER_ID})")
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ -Wall ${CMAKE_CXX_FLAGS}")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set(CMAKE_CXX_FLAGS "-std=c++11 -Wall ${CMAKE_CXX_FLAGS}")
-endif ()
+endif()
 set(CMAKE_CXX_FLAGS "-Wconversion -Wpedantic -Wshadow ${CMAKE_CXX_FLAGS}")
 
 #Add headers to IDE projects

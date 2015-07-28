@@ -1,9 +1,9 @@
-macro (build_and_run arg)
+macro(build_and_run arg)
 	# Add headers to sources to enable file browsing in IDEs
 	add_executable("${arg}" "${arg}.cpp" ${sqlpp_headers} "${CMAKE_CURRENT_LIST_DIR}/Sample.h")
 	target_link_libraries("${arg}" sqlpp11)
 	add_test("${arg}" "${CMAKE_BINARY_DIR}/tests/${arg}")
-endmacro ()
+endmacro()
 
 build_and_run(BooleanExpressionTest)
 build_and_run(CustomQueryTest)
